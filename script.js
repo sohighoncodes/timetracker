@@ -14,6 +14,18 @@ function updateDisplay() {
     secondsEl.textContent = seconds.toString().padStart(2, '0');
 }
 
+function captureScreenshot() {
+    html2canvas(document.body).then(function(canvas) {
+        const imgData = canvas.toDataURL();
+        const link = document.createElement('a');
+        link.href = imgData;
+        link.download = 'screenshot-' + new Date().toISOString() + '.png';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+}
+
 function startTimer() {
     isRunning = true;
     timer = setInterval(() => {
@@ -27,6 +39,11 @@ function startTimer() {
             }
         }
         updateDisplay();
+        
+        // Check if 15 minutes have passed
+        if (hours % 15 == 0 && minutes == 0 && seconds == 0) {
+            captureScreenshot();
+        }
     }, 1000);
 }
 
